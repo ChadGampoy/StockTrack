@@ -3,34 +3,12 @@ require_once 'Product.php';
 $productObj = new Product();
 
 $editProduct = null;
+$error = null;
 
-
-if (isset($_GET['edit'])) {
-    $editProduct = $productObj->getById($_GET['edit']);
-}
-
-
+// Handle Delete Action
 if (isset($_GET['delete'])) {
-    $productObj->delete($_GET['delete']);
-    header("Location: index.php");
-    exit();
-}
-
-
-if (isset($_POST['save_product'])) {
     try {
-        if ($_POST['price'] <= 0) {
-            throw new Exception("Price must be greater than zero.");
-        }
-
-        if (!empty($_POST['product_id'])) {
-          
-            $productObj->update($_POST['product_id'], $_POST['name'], $_POST['category_id'], $_POST['supplier_id'], $_POST['price'], $_POST['stock'], $_POST['reorder']);
-        } else {
-       
-            $productObj->create($_POST['name'], $_POST['category_id'], $_POST['supplier_id'], $_POST['price'], $_POST['stock'], $_POST['reorder']);
-        }
-
+        $productObj->delete($_GET['delete']);
         header("Location: index.php");
         exit();
     } catch (Exception $e) {
@@ -38,6 +16,49 @@ if (isset($_POST['save_product'])) {
     }
 }
 
+// Handle Edit Action (Fetch single product data for form pre-filling)
+if (isset($_GET['edit'])) {
+    $editProduct = $productObj->getById($_GET['edit']);
+}
+
+// Handle Form Submission (Add or Update)
+if (isset($_POST['save_product'])) {
+    try {
+        if ($_POST['price'] <= 0) {
+            throw new Exception("Price must be greater than zero.");
+        }
+
+        if (!empty($_POST['product_id'])) {
+            // Update Existing Record
+            $productObj->update(
+                $_POST['product_id'],
+                $_POST['name'],
+                $_POST['category_id'],
+                $_POST['supplier_id'],
+                $_POST['price'],
+                $_POST['stock'],
+                $_POST['reorder']
+            );
+        } else {
+            // Create New Record
+            $productObj->create(
+                $_POST['name'],
+                $_POST['category_id'],
+                $_POST['supplier_id'],
+                $_POST['price'],
+                $_POST['stock'],
+                $_POST['reorder']
+            );
+        }
+
+        header("Location: index.php?success=1");
+        exit();
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+    }
+}
+
+// Search, Filter, and Sort Handling
 $search = $_GET['search'] ?? '';
 $cat_filter = $_GET['category_id'] ?? '';
 $sort_by = $_GET['sort_by'] ?? 'product_id';
@@ -56,11 +77,15 @@ $products = $productObj->getAll($search, $cat_filter, $sort_by);
 <div class="container">
     <h2 class="mb-4">StockTrack: Grocery Store Inventory Management</h2>
     
-    <?php if (isset($error)): ?>
+    <?php if ($error): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
     <?php endif; ?>
 
+    <?php if (isset($_GET['success'])): ?>
+        <div class="alert alert-success">Operation completed successfully!</div>
+    <?php endif; ?>
 
+    <!-- Search, Filter & Sort Bar -->
     <form method="GET" class="row g-2 mb-4">
         <div class="col-md-4">
             <input type="text" name="search" class="form-control" placeholder="Search product..." value="<?= htmlspecialchars($search) ?>">
@@ -85,7 +110,7 @@ $products = $productObj->getAll($search, $cat_filter, $sort_by);
         </div>
     </form>
 
-
+    <!-- Product Form (Add / Edit) -->
     <div class="card mb-4 p-3 shadow-sm">
         <h5><?= $editProduct ? 'Edit Product ID #' . $editProduct['product_id'] : 'Add New Product' ?></h5>
         <form method="POST" class="row g-3">
@@ -122,7 +147,7 @@ $products = $productObj->getAll($search, $cat_filter, $sort_by);
         </form>
     </div>
 
-    
+    <!-- Products Data Table -->
     <table class="table table-bordered bg-white shadow-sm">
         <thead class="table-dark">
             <tr>
