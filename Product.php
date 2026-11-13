@@ -10,7 +10,7 @@ abstract class BaseModel {
 }
 
 class Product extends BaseModel {
-    public function getAll($search = '', $category_id = '', $sort_by = 'product_name', $order = 'ASC') {
+public function getAll($search = '', $category_id = '', $sort_by = 'product_id', $low_stock_only = false) {
         $sql = "SELECT p.*, c.category_name, s.supplier_name 
                 FROM products p 
                 LEFT JOIN categories c ON p.category_id = c.category_id 
@@ -20,22 +20,22 @@ class Product extends BaseModel {
         if (!empty($search)) {
             $sql .= " AND p.product_name LIKE '%" . $this->db->real_escape_string($search) . "%'";
         }
-
         if (!empty($category_id)) {
             $sql .= " AND p.category_id = " . intval($category_id);
         }
-
-        $allowed_sort = ['product_name', 'unit_price', 'stock_quantity', 'product_id'];
+        if ($low_stock_only) {
+            $sql .= " AND p.stock_quantity <= p.reorder_level";
+        }
+        
+        $allowed_sort = ['product_id', 'product_name', 'unit_price', 'stock_quantity'];
         if (!in_array($sort_by, $allowed_sort)) {
             $sort_by = 'product_id';
         }
-
-        $order = ($order === 'DESC') ? 'DESC' : 'ASC';
-        $sql .= " ORDER BY {$sort_by} {$order}";
-
+        
+        $sql .= " ORDER BY p.{$sort_by} ASC";
         return $this->db->query($sql);
     }
-
+    
     public function create($product_name, $category_id, $supplier_id, $price, $stock_quantity, $reorder_level) {
         if ($price < 0) {
             throw new Exception("Price cannot be negative.");
