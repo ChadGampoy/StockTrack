@@ -1,0 +1,141 @@
+{
+  "info": {
+    "_postman_id": "8e7c8900-0a8a-43f0-9dad-15e859438c0b",
+    "name": "StockTrack API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60182258",
+    "_collection_link": "https://go.postman.co/collection/60182258-8e7c8900-0a8a-43f0-9dad-15e859438c0b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get All Products",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://stocktrack-wma4.infinityfreeapp.com/",
+          "protocol": "http",
+          "host": [
+            "stocktrack-wma4",
+            "infinityfreeapp",
+            "com"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Product",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://stocktrack-wma4.infinityfreeapp.com/api.php?id=1",
+          "protocol": "http",
+          "host": [
+            "stocktrack-wma4",
+            "infinityfreeapp",
+            "com"
+          ],
+          "path": [
+            "api.php"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Product",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"product_name\": \"Coke 1.5L\",\r\n  \"category_id\": 1,\r\n  \"supplier_id\": 1,\r\n  \"unit_price\": 65.00,\r\n  \"stock_quantity\": 20,\r\n  \"reorder_level\": 5\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://stocktrack-wma4.infinityfreeapp.com/api.php",
+          "protocol": "http",
+          "host": [
+            "stocktrack-wma4",
+            "infinityfreeapp",
+            "com"
+          ],
+          "path": [
+            "api.php"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Product",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"product_id\": 1,\r\n  \"product_name\": \"Coke 1.5L Updated\",\r\n  \"category_id\": 1,\r\n  \"supplier_id\": 1,\r\n  \"unit_price\": 68.00,\r\n  \"stock_quantity\": 25,\r\n  \"reorder_level\": 5\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://stocktrack-wma4.infinityfreeapp.com/api.php",
+          "protocol": "http",
+          "host": [
+            "stocktrack-wma4",
+            "infinityfreeapp",
+            "com"
+          ],
+          "path": [
+            "api.php"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Product",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://stocktrack-wma4.infinityfreeapp.com/api.php?id=17",
+          "protocol": "http",
+          "host": [
+            "stocktrack-wma4",
+            "infinityfreeapp",
+            "com"
+          ],
+          "path": [
+            "api.php"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "17"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
